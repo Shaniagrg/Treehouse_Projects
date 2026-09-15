@@ -13,15 +13,38 @@ For assistance:
 
 //Element selector
 const studentList = document.querySelector('.student-list');
-const paginationList = document.querySelector('.link-list')
+const paginationList = document.querySelector('.link-list');
 //diaplaying 9 user in each page
 const itemperpage = 9;
+
+
+//Create and add search bar
+const searcHeading = document.querySelector('header')
+const searchHTML = `
+   <label for="search" class="student-search">
+      <span>Search by name</span>
+      <input id="search" placeholder="Search by name...">
+      <button type="button"><img src="img/icn-search.svg" alt="Search icon"></button>
+   </label>
+   `
+searcHeading.insertAdjacentHTML('beforeend',searchHTML);
+
+
+const searchInput = document.querySelector('#search');
+const searchButton = document.querySelector('.student-search button')
+
 
 /*
 Create the `showPage` function
 This function will create and insert/append the elements needed to display a "page" of nine students
 A list parameter to represent an array of student objects.
 A page parameter to represent the requested page number.
+
+Parameter
+   -  list
+   - page
+ Return
+   - none
 
 */
 function showPage(list, page){
@@ -61,6 +84,11 @@ function showPage(list, page){
 /*
 Create the `addPagination` function
 This function will create and insert/append the elements needed for the pagination buttons
+
+Parameter
+   - list
+Return 
+   - none
 */
 
 function addPagination(list){
@@ -109,6 +137,53 @@ function addPagination(list){
    })
 
 }
+
+/*
+Add Search Functionality
+*/
+function searchStudents(){
+   const userInput = searchInput.value.toLowerCase();
+
+   //empty array for matching studenta
+   const newData = [];
+
+   //loop to find the matching names 
+   for (let i = 0; i < data.length; i++){
+      const firstName = data[i].name.first.toLowerCase();
+      const lastName = data[i].name.last.toLowerCase();
+
+      //when you search check if the name contains
+      if (firstName.includes(userInput) || lastName.includes(userInput)) {
+         newData.push(data[i]);
+      }
+   }
+   
+   //handle result after the loop finishes checking all the records
+   if (newData.length === 0){
+      studentList.innerHTML = `
+         <li class="student-item">
+            <div class = "student-details">
+               <h3>No results </h3>
+            </div>
+         </li>
+      `;
+
+      //remove pagination if no results found
+      paginationList.innerHTML = '';
+   }else{
+      showPage(newData, 1);
+      addPagination(newData)
+   }
+   
+      
+}
+
+//listens when typing
+searchInput.addEventListener('keyup', searchStudents);
+
+//listens when clicks the search button
+searchButton.addEventListener('click', searchStudents);
+
 
 // Call functions
 //shows the 1st page 
